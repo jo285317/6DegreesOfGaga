@@ -92,10 +92,10 @@ def deserializeAndPopulate():
             G.add_edge(x[0],x[1], edge_song=song['name'])
     return known_songs, known_artists
 
-def save_obj(obj, name ):
+def saveObj(obj, name ):
     with open(name + '.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
-save_obj(known_songs, "aftermulti-")
+saveObj(known_songs, "aftermulti-")
 def updateGraphFromSongs():
     for key, song in known_songs.items():
         for artist in song['artists']:
@@ -105,7 +105,7 @@ def updateGraphFromSongs():
         for x in list(perm):
             G.add_edge(x[0],x[1], edge_song=song['name'])
 
-def get_shortest_path(G, target):
+def getShortestPath(G, target):
     try:
         shortest_path = nx.shortest_path(G, source="Lady Gaga", target=target)
     except nx.exception.NetworkXNoPath: 
@@ -121,7 +121,7 @@ def get_shortest_path(G, target):
     
 
 
-def expandLowDegree():
+def expandLowDegree(known_artists,known_songs):
     for artist in known_artists.copy():
         if not G.has_node(artist):
             G.add_node(artist)
@@ -132,12 +132,12 @@ if __name__ == "__main__":
     client_id = ""
     client_secret = "" 
     known_songs, known_artists = deserializeAndPopulate()
-    updateGraphFromSongs()
     print(nx.info(G))
     print(len(known_artists))
     print(len(known_songs))
 
     sp = getSpotify(client_id, client_secret)
     # nx.write_graphml(G,"test.graphml")
-
+    expandLowDegree(known_artists,known_songs)
+    updateGraphFromSongs()
  
